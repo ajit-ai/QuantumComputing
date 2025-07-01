@@ -41,7 +41,7 @@ Application: Quantum chemistry, material science, and molecular simulations.
 Impact: Practical for near-term quantum devices (NISQ) due to its hybrid nature.
 Complexity: Depends on ansatz and optimization, typically heuristic-based.
 
-7 Quantum Approximate Optimization Algorithm (QAOA)
+7. Quantum Approximate Optimization Algorithm (QAOA)
 Purpose: Solves combinatorial optimization problems using a variational approach.
 Application: Graph problems, scheduling, and machine learning optimization.
 Impact: Promising for NISQ devices, offering potential speedups for NP-hard problems.
