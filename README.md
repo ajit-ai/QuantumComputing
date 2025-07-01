@@ -1,6 +1,8 @@
 "# QuantumComputing" 
 The quantum space is too wide and the communication to a bit by bit particle can be calculated by all means in physical form with mathematical calculation or physical identity and any measurement.
-The codebase follows the required information a provided by requirement team
+The codebase follows the required information a provided by requirement team.
+
+
 10 top algorithm for quantum computing
 
 
