@@ -66,3 +66,5 @@ Purpose: Finds the period of a periodic function with an exponential speedup.
 Application: Cryptanalysis and theoretical studies of quantum advantage.
 Impact: Inspired Shor's algorithm and demonstrated quantum computing’s potential for hidden structure problems.
 Complexity: O(n) queries vs. O(2^n) classically.
+
+11. 
