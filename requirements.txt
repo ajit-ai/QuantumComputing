@@ -1,0 +1,12 @@
+qiskit>=1.0
+qiskit-aer>=0.13
+numpy
+pillow
+fastapi
+uvicorn
+httpx
+pytest
+
+# Optional vendor SDKs used by reference notebooks only (not required by qc_app):
+# pennylane
+# cirq

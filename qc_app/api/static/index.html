@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuantumComputing Demo</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --border:#30363d; --text:#e6edf3; --accent:#58a6ff; --ok:#3fb950; }
+  * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',system-ui,sans-serif; }
+  body { background:var(--bg); color:var(--text); padding:24px; }
+  h1 { font-size:1.5rem; margin-bottom:4px; }
+  .sub { color:#8b949e; margin-bottom:24px; font-size:.9rem; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1100px; }
+  @media (max-width:800px){ .grid{grid-template-columns:1fr;} }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; }
+  .card h2 { font-size:1rem; margin-bottom:12px; color:var(--accent); }
+  label { display:block; font-size:.8rem; color:#8b949e; margin:10px 0 4px; }
+  select, textarea, button {
+    width:100%; background:#0d1117; color:var(--text);
+    border:1px solid var(--border); border-radius:6px; padding:8px; font-size:.9rem;
+  }
+  textarea { min-height:70px; font-family:Consolas,monospace; resize:vertical; }
+  button { cursor:pointer; margin-top:12px; background:#21262d; font-weight:600; }
+  button:hover { border-color:var(--accent); }
+  pre {
+    background:#0d1117; border:1px solid var(--border); border-radius:6px;
+    padding:12px; margin-top:12px; font-size:.78rem; overflow:auto;
+    max-height:340px; white-space:pre-wrap; word-break:break-word;
+  }
+  .status-ok { color:var(--ok); } .status-err { color:#f85149; }
+  #captcha-img { border:1px solid var(--border); border-radius:6px; width:100%; image-rendering:auto; }
+  .row { display:flex; gap:10px; align-items:center; }
+  .row button { width:auto; margin-top:0; padding:8px 16px; }
+</style>
+</head>
+<body>
+<h1>QuantumComputing Demo</h1>
+<p class="sub">SDK-agnostic quantum algorithms &middot; QRNG captcha &middot; powered by Qiskit + AerSimulator</p>
+
+<div class="grid">
+  <div class="card">
+    <h2>Algorithm Runner</h2>
+    <label for="algo">Algorithm</label>
+    <select id="algo"></select>
+    <label for="params">Parameters (JSON)</label>
+    <textarea id="params">{}</textarea>
+    <button onclick="runAlgo()">Run Circuit</button>
+    <pre id="algo-out">Select an algorithm and press Run.</pre>
+  </div>
+
+  <div class="card">
+    <h2>Quantum Captcha (QRNG)</h2>
+    <img id="captcha-img" src="/captcha?length=6" alt="captcha">
+    <div class="row">
+      <button onclick="refreshCaptcha()">New Captcha</button>
+      <button onclick="runChallenge()">Entanglement Challenge</button>
+    </div>
+    <pre id="challenge-out">Challenge the Bell-state logic above.</pre>
+  </div>
+</div>
+
+<script>
+const DEFAULTS = {
+  deutsch_jozsa: { oracle_type: "balanced", n_qubits: 3 },
+  grovers: { marked: "101", shots: 1024 },
+  simon: { secret: "101", shots: 128 },
+  shors: { n: 15 },
+  qft: { input_value: 1, n_qubits: 3 },
+  qpe: { n_counting: 3 },
+  vqe: { max_iter: 250 },
+  qaoa: {}
+};
+
+async function loadAlgorithms() {
+  const res = await fetch("/algorithms");
+  const data = await res.json();
+  const select = document.getElementById("algo");
+  Object.keys(data).forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = `${name} - ${data[name]}`;
+    select.appendChild(opt);
+  });
+  select.onchange = () => {
+    document.getElementById("params").value =
+      JSON.stringify(DEFAULTS[select.value] || {}, null, 2);
+  };
+  document.getElementById("params").value =
+    JSON.stringify(DEFAULTS[select.value] || {}, null, 2);
+}
+
+async function runAlgo() {
+  const out = document.getElementById("algo-out");
+  const name = document.getElementById("algo").value;
+  let params;
+  try { params = JSON.parse(document.getElementById("params").value || "{}"); }
+  catch (e) { out.innerHTML = '<span class="status-err">Invalid JSON params</span>'; return; }
+  out.textContent = "Running circuit...";
+  try {
+    const res = await fetch(`/algorithms/${name}/run`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ params })
+    });
+    const data = await res.json();
+    out.innerHTML = `<span class="${res.ok ? 'status-ok' : 'status-err'}">HTTP ${res.status}</span>\n` +
+      JSON.stringify(data, null, 2);
+  } catch (e) { out.innerHTML = `<span class="status-err">${e}</span>`; }
+}
+
+function refreshCaptcha() {
+  document.getElementById("captcha-img").src = `/captcha?length=6&t=${Date.now()}`;
+}
+
+async function runChallenge() {
+  const out = document.getElementById("challenge-out");
+  out.textContent = "Measuring Bell state...";
+  const res = await fetch("/captcha/challenge");
+  const data = await res.json();
+  out.innerHTML = `<span class="${data.correct ? 'status-ok' : 'status-err'}">${data.measured_relation}</span>\n` +
+    JSON.stringify(data, null, 2);
+}
+
+loadAlgorithms();
+</script>
+</body>
+</html>
