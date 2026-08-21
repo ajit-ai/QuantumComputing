@@ -90,6 +90,7 @@ Roadmap additions: real-hardware backends (IBM Quantum), Streamlit UI.
 ## Development
 
 ```bash
+pip install -r requirements.txt -r requirements-dev.txt
 pytest -v          # run test suite
 flake8 qc_app tests
 ```
