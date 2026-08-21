@@ -9,7 +9,7 @@ vendor reference notebooks.
 ```
 qc_app/                     THE APPLICATION (SDK-agnostic)
 ├── core/                   Backend helpers (AerSimulator, counts)
-├── algorithms/             8 algorithms behind one registry interface
+├── algorithms/             10 algorithms behind one registry interface
 │   ├── deutsch_jozsa.py    Constant vs balanced, one query
 │   ├── grover.py           Unstructured search (quadratic speedup)
 │   ├── simon.py            Hidden XOR mask (exponential speedup)
@@ -82,9 +82,10 @@ curl -X POST localhost:8000/algorithms/grovers/run \
 6. **Simon's** - hidden XOR structure, O(n) queries
 7. **VQE** - H2 ground state energy (NISQ-friendly hybrid)
 8. **QAOA** - MaxCut combinatorial optimization (NISQ-friendly hybrid)
+9. **HHL** - linear system solver Ax=b (2x2 Hermitian demo)
+10. **Quantum Walk** - discrete-time walk on a cycle graph
 
-Roadmap additions: HHL, Quantum Walks, real-hardware backends (IBM Quantum),
-Streamlit UI, Docker packaging.
+Roadmap additions: real-hardware backends (IBM Quantum), Streamlit UI.
 
 ## Development
 

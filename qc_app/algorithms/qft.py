@@ -3,26 +3,28 @@ import numpy as np
 from qiskit import QuantumCircuit
 
 
-def qft(qc, n_qubits, do_swaps=True):
-    for j in range(n_qubits - 1, -1, -1):
-        qc.h(j)
+def qft(qc, n_qubits, do_swaps=True, qubits=None):
+    qubits = list(range(n_qubits)) if qubits is None else list(qubits)
+    for j in reversed(range(n_qubits)):
+        qc.h(qubits[j])
         for k in range(j - 1, -1, -1):
             angle = np.pi / (2 ** (j - k))
-            qc.cp(angle, k, j)
+            qc.cp(angle, qubits[k], qubits[j])
     if do_swaps:
         for i in range(n_qubits // 2):
-            qc.swap(i, n_qubits - i - 1)
+            qc.swap(qubits[i], qubits[n_qubits - i - 1])
     return qc
 
 
-def inverse_qft(qc, n_qubits, do_swaps=True):
+def inverse_qft(qc, n_qubits, do_swaps=True, qubits=None):
+    qubits = list(range(n_qubits)) if qubits is None else list(qubits)
     if do_swaps:
         for i in range(n_qubits // 2):
-            qc.swap(i, n_qubits - i - 1)
+            qc.swap(qubits[i], qubits[n_qubits - i - 1])
     for j in range(n_qubits):
         for k in range(j - 1, -1, -1):
-            qc.cp(-np.pi / (2 ** (j - k)), k, j)
-        qc.h(j)
+            qc.cp(-np.pi / (2 ** (j - k)), qubits[k], qubits[j])
+        qc.h(qubits[j])
     return qc
 
 

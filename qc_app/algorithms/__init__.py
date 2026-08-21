@@ -1,5 +1,16 @@
 """Algorithm registry: single entry point for all implemented algorithms."""
-from qc_app.algorithms import deutsch_jozsa, grover, qaoa, qft, qpe, shors, simon, vqe
+from qc_app.algorithms import (
+    deutsch_jozsa,
+    grover,
+    hhl,
+    qaoa,
+    qft,
+    qpe,
+    quantum_walk,
+    shors,
+    simon,
+    vqe,
+)
 
 REGISTRY = {
     "deutsch_jozsa": {
@@ -33,6 +44,14 @@ REGISTRY = {
     "qaoa": {
         "description": "QAOA for MaxCut combinatorial optimization.",
         "run": qaoa.run,
+    },
+    "hhl": {
+        "description": "HHL linear-system solver Ax=b (2x2 Hermitian demo).",
+        "run": hhl.run,
+    },
+    "quantum_walk": {
+        "description": "Discrete-time quantum walk on a cycle graph.",
+        "run": quantum_walk.run,
     },
 }
 
